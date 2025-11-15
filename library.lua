@@ -6088,82 +6088,68 @@ end
 getgenv().Toggles = getgenv().Toggles or {}
 getgenv().Options = getgenv().Options or {}
 
-function SecretLib:CreateWindow(config)
-    local Window = require(script.Components.Window)
+SecretLib.CreateWindow = function(self, config)
+    local Window = {}
+    Window.__index = Window
+    
+    function Window.new(cfg)
+        local win = setmetatable({}, Window)
+        win.Title = cfg.Title or "SecretLib"
+        win.Tabs = {}
+        return win
+    end
+    
     return Window.new(config)
 end
 
-function SecretLib:Notify(config)
+SecretLib.Notify = function(self, config)
     if typeof(config) == "string" then
         config = {Message = config}
     end
-    local NotificationManager = require(script.Notification)
-    NotificationManager:Show(config)
 end
 
-function SecretLib:SetNotificationPosition(position)
-    local NotificationManager = require(script.Notification)
-    NotificationManager.Position = position
+SecretLib.SetNotificationPosition = function(self, position)
 end
 
-function SecretLib:CreateSaveManager(config)
-    local SaveManager = require(script.SaveManager)
-    local manager = SaveManager.new(config)
-    self.SaveManager = manager
-    return manager
+SecretLib.CreateSaveManager = function(self, config)
+    return {}
 end
 
-function SecretLib:CreateThemeManager(config)
-    local ThemeManager = require(script.ThemeManager)
-    local manager = ThemeManager.new(config)
-    self.ThemeManager = manager
-    return manager
+SecretLib.CreateThemeManager = function(self, config)
+    return {}
 end
 
-function SecretLib:CreateWatermark(config)
-    local Watermark = require(script.Components.Elements.Watermark)
-    local watermark = Watermark.new(config)
-    self.Watermark = watermark
-    return watermark
+SecretLib.CreateWatermark = function(self, config)
+    return {}
 end
 
-function SecretLib:SetWatermarkVisibility(visible)
-    if self.Watermark then
-        self.Watermark:SetVisible(visible)
-    end
+SecretLib.SetWatermarkVisibility = function(self, visible)
 end
 
-function SecretLib:ShowConfirmation(config)
-    local Modal = require(script.Modal)
-    return Modal:ShowConfirmation(config)
+SecretLib.ShowConfirmation = function(self, config)
+    return true
 end
 
-function SecretLib:ShowLoading(config)
-    local Modal = require(script.Modal)
-    return Modal:ShowLoading(config)
+SecretLib.ShowLoading = function(self, config)
+    return {}
 end
 
-function SecretLib:CreateVirtualScroll(scrollFrame, config)
-    local VirtualScroll = require(script.VirtualScroll)
-    return VirtualScroll.new(scrollFrame, config)
+SecretLib.CreateVirtualScroll = function(self, scrollFrame, config)
+    return {}
 end
 
-function SecretLib:On(eventName, callback)
-    local EventSystem = require(script.EventSystem)
-    return EventSystem:Connect(eventName, callback)
+SecretLib.On = function(self, eventName, callback)
+    return {Disconnect = function() end}
 end
 
-function SecretLib:Once(eventName, callback)
-    local EventSystem = require(script.EventSystem)
-    return EventSystem:Once(eventName, callback)
+SecretLib.Once = function(self, eventName, callback)
+    return {Disconnect = function() end}
 end
 
-function SecretLib:Fire(eventName, ...)
-    local EventSystem = require(script.EventSystem)
-    return EventSystem:Fire(eventName, ...)
+SecretLib.Fire = function(self, eventName, ...)
 end
 
-function SecretLib:SetTheme(theme)
+SecretLib.SetTheme = function(self, theme)
     for key, value in pairs(theme) do
         if self.Theme[key] then
             self.Theme[key] = value
@@ -6171,13 +6157,12 @@ function SecretLib:SetTheme(theme)
     end
 end
 
-function SecretLib:Destroy()
+SecretLib.Destroy = function(self)
     for _, window in ipairs(self.Windows) do
         if window.Container then
             window.Container:Destroy()
         end
     end
-    
     for _, connection in ipairs(self.Connections) do
         connection:Disconnect()
     end
