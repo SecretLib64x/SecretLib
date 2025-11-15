@@ -74,9 +74,85 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local TextService = game:GetService("TextService")
 
-local SpringModule = 
-local Spring = SpringModule.Spring
-local AnimationController = SpringModule.AnimationController
+local Spring = {}
+Spring.__index = Spring
+
+function Spring.new(initialValue, config)
+    local self = setmetatable({}, Spring)
+    self.Value = initialValue
+    self.Target = initialValue
+    self.Velocity = 0
+    self.Tension = config.Tension or 180
+    self.Friction = config.Friction or 20
+    return self
+end
+
+function Spring:Update(dt)
+    local displacement = self.Value - self.Target
+    local springForce = -self.Tension * displacement
+    local dampingForce = -self.Friction * self.Velocity
+    
+    local acceleration = springForce + dampingForce
+    self.Velocity = self.Velocity + acceleration * dt
+    self.Value = self.Value + self.Velocity * dt
+    
+    if math.abs(self.Velocity) < 0.01 and math.abs(displacement) < 0.01 then
+        self.Value = self.Target
+        self.Velocity = 0
+        return true
+    end
+    
+    return false
+end
+
+function Spring:SetTarget(target)
+    self.Target = target
+end
+
+local AnimationController = {
+    Springs = {},
+    Active = false
+}
+
+function AnimationController:AddSpring(id, spring)
+    self.Springs[id] = spring
+    if not self.Active then
+        self:Start()
+    end
+end
+
+function AnimationController:RemoveSpring(id)
+    self.Springs[id] = nil
+    if next(self.Springs) == nil then
+        self:Stop()
+    end
+end
+
+function AnimationController:Start()
+    if self.Active then return end
+    self.Active = true
+    
+    local lastTime = tick()
+    self.Connection = RunService.RenderStepped:Connect(function()
+        local currentTime = tick()
+        local dt = math.min(currentTime - lastTime, 0.1)
+        lastTime = currentTime
+        
+        for id, spring in pairs(self.Springs) do
+            if spring:Update(dt) then
+                self:RemoveSpring(id)
+            end
+        end
+    end)
+end
+
+function AnimationController:Stop()
+    if self.Connection then
+        self.Connection:Disconnect()
+        self.Connection = nil
+    end
+    self.Active = false
+end
 
 local Utility = {}
 
