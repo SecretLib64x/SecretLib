@@ -6088,4 +6088,103 @@ end
 getgenv().Toggles = getgenv().Toggles or {}
 getgenv().Options = getgenv().Options or {}
 
+function SecretLib:CreateWindow(config)
+    local Window = require(script.Components.Window)
+    return Window.new(config)
+end
+
+function SecretLib:Notify(config)
+    if typeof(config) == "string" then
+        config = {Message = config}
+    end
+    local NotificationManager = require(script.Notification)
+    NotificationManager:Show(config)
+end
+
+function SecretLib:SetNotificationPosition(position)
+    local NotificationManager = require(script.Notification)
+    NotificationManager.Position = position
+end
+
+function SecretLib:CreateSaveManager(config)
+    local SaveManager = require(script.SaveManager)
+    local manager = SaveManager.new(config)
+    self.SaveManager = manager
+    return manager
+end
+
+function SecretLib:CreateThemeManager(config)
+    local ThemeManager = require(script.ThemeManager)
+    local manager = ThemeManager.new(config)
+    self.ThemeManager = manager
+    return manager
+end
+
+function SecretLib:CreateWatermark(config)
+    local Watermark = require(script.Components.Elements.Watermark)
+    local watermark = Watermark.new(config)
+    self.Watermark = watermark
+    return watermark
+end
+
+function SecretLib:SetWatermarkVisibility(visible)
+    if self.Watermark then
+        self.Watermark:SetVisible(visible)
+    end
+end
+
+function SecretLib:ShowConfirmation(config)
+    local Modal = require(script.Modal)
+    return Modal:ShowConfirmation(config)
+end
+
+function SecretLib:ShowLoading(config)
+    local Modal = require(script.Modal)
+    return Modal:ShowLoading(config)
+end
+
+function SecretLib:CreateVirtualScroll(scrollFrame, config)
+    local VirtualScroll = require(script.VirtualScroll)
+    return VirtualScroll.new(scrollFrame, config)
+end
+
+function SecretLib:On(eventName, callback)
+    local EventSystem = require(script.EventSystem)
+    return EventSystem:Connect(eventName, callback)
+end
+
+function SecretLib:Once(eventName, callback)
+    local EventSystem = require(script.EventSystem)
+    return EventSystem:Once(eventName, callback)
+end
+
+function SecretLib:Fire(eventName, ...)
+    local EventSystem = require(script.EventSystem)
+    return EventSystem:Fire(eventName, ...)
+end
+
+function SecretLib:SetTheme(theme)
+    for key, value in pairs(theme) do
+        if self.Theme[key] then
+            self.Theme[key] = value
+        end
+    end
+end
+
+function SecretLib:Destroy()
+    for _, window in ipairs(self.Windows) do
+        if window.Container then
+            window.Container:Destroy()
+        end
+    end
+    
+    for _, connection in ipairs(self.Connections) do
+        connection:Disconnect()
+    end
+    
+    if self.ScreenGui then
+        self.ScreenGui:Destroy()
+    end
+end
+
 return SecretLib
