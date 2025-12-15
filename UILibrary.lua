@@ -14,146 +14,12 @@ local COLORS = {
     Text = Color3.fromRGB(200, 200, 200),
     TextDim = Color3.fromRGB(120, 120, 120),
     Accent = Color3.fromRGB(150, 255, 100),
-    AccentDim = Color3.fromRGB(100, 200, 70),
     Red = Color3.fromRGB(255, 100, 100),
     Blue = Color3.fromRGB(100, 150, 255),
     Purple = Color3.fromRGB(200, 100, 255),
     Orange = Color3.fromRGB(255, 180, 100),
     Yellow = Color3.fromRGB(255, 255, 100),
-    White = Color3.fromRGB(255, 255, 255),
 }
-
-function UILibrary.new(title)
-    local self = setmetatable({}, UILibrary)
-    
-    self.Title = title or "Menu"
-    self.Tabs = {}
-    self.CurrentTab = nil
-    self.Visible = true
-    self.AccentColor = COLORS.Accent
-    
-    self:CreateUI()
-    
-    return self
-end
-
-function UILibrary:CreateUI()
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "CheatMenu"
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.Parent = game:GetService("CoreGui")
-    
-    self.ScreenGui = ScreenGui
-    
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 800, 0, 700)
-    MainFrame.Position = UDim2.new(0.5, -400, 0.5, -350)
-    MainFrame.BackgroundColor3 = COLORS.Background
-    MainFrame.BorderSizePixel = 0
-    MainFrame.Parent = ScreenGui
-    
-    self.MainFrame = MainFrame
-    
-    local TopBorder = Instance.new("Frame")
-    TopBorder.Name = "TopBorder"
-    TopBorder.Size = UDim2.new(1, 0, 0, 2)
-    TopBorder.BackgroundColor3 = self.AccentColor
-    TopBorder.BorderSizePixel = 0
-    TopBorder.Parent = MainFrame
-    
-    self.TopBorder = TopBorder
-    
-    local Sidebar = Instance.new("Frame")
-    Sidebar.Name = "Sidebar"
-    Sidebar.Size = UDim2.new(0, 100, 1, -2)
-    Sidebar.Position = UDim2.new(0, 0, 0, 2)
-    Sidebar.BackgroundColor3 = COLORS.Sidebar
-    Sidebar.BorderSizePixel = 0
-    Sidebar.Parent = MainFrame
-    
-    self.Sidebar = Sidebar
-    
-    local SidebarList = Instance.new("UIListLayout")
-    SidebarList.SortOrder = Enum.SortOrder.LayoutOrder
-    SidebarList.Padding = UDim.new(0, 0)
-    SidebarList.Parent = Sidebar
-    
-    local ContentFrame = Instance.new("Frame")
-    ContentFrame.Name = "ContentFrame"
-    ContentFrame.Size = UDim2.new(1, -100, 1, -2)
-    ContentFrame.Position = UDim2.new(0, 100, 0, 2)
-    ContentFrame.BackgroundColor3 = COLORS.Background
-    ContentFrame.BorderSizePixel = 0
-    ContentFrame.Parent = MainFrame
-    
-    self.ContentFrame = ContentFrame
-    
-    self:MakeDraggable(MainFrame)
-    self:SetupToggleKey()
-end
-
-function UILibrary:MakeDraggable(frame)
-    local dragging = false
-    local dragInput, mousePos, framePos
-    
-    frame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            mousePos = input.Position
-            framePos = frame.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-    
-    frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - mousePos
-            frame.Position = UDim2.new(
-                framePos.X.Scale,
-                framePos.X.Offset + delta.X,
-                framePos.Y.Scale,
-                framePos.Y.Offset + delta.Y
-            )
-        end
-    end)
-end
-
-function UILibrary:SetupToggleKey()
-    UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if not gameProcessed and input.KeyCode == Enum.KeyCode.Insert then
-            self:Toggle()
-        end
-    end)
-end
-
-function UILibrary:Toggle()
-    self.Visible = not self.Visible
-    self.MainFrame.Visible = self.Visible
-end
-
-function UILibrary:SetAccentColor(color)
-    self.AccentColor = color
-    self.TopBorder.BackgroundColor3 = color
-    
-    for _, tab in pairs(self.Tabs) do
-        if tab.Selected then
-            tab.Button.BackgroundColor3 = color
-        end
-    end
-end
 
 local IconDrawings = {
     Rage = function(parent)
@@ -454,11 +320,143 @@ local IconDrawings = {
     end
 }
 
+function UILibrary.new(title)
+    local self = setmetatable({}, UILibrary)
+    
+    self.Title = title or "Menu"
+    self.Tabs = {}
+    self.CurrentTab = nil
+    self.Visible = true
+    self.AccentColor = COLORS.Accent
+    
+    self:CreateUI()
+    
+    return self
+end
+
+function UILibrary:CreateUI()
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "CheatMenu"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.Parent = game:GetService("CoreGui")
+    
+    self.ScreenGui = ScreenGui
+    
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Name = "MainFrame"
+    MainFrame.Size = UDim2.new(0, 800, 0, 700)
+    MainFrame.Position = UDim2.new(0.5, -400, 0.5, -350)
+    MainFrame.BackgroundColor3 = COLORS.Background
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Parent = ScreenGui
+    
+    self.MainFrame = MainFrame
+    
+    local TopBorder = Instance.new("Frame")
+    TopBorder.Name = "TopBorder"
+    TopBorder.Size = UDim2.new(1, 0, 0, 2)
+    TopBorder.BackgroundColor3 = self.AccentColor
+    TopBorder.BorderSizePixel = 0
+    TopBorder.Parent = MainFrame
+    
+    self.TopBorder = TopBorder
+    
+    local Sidebar = Instance.new("Frame")
+    Sidebar.Name = "Sidebar"
+    Sidebar.Size = UDim2.new(0, 100, 1, -2)
+    Sidebar.Position = UDim2.new(0, 0, 0, 2)
+    Sidebar.BackgroundColor3 = COLORS.Sidebar
+    Sidebar.BorderSizePixel = 0
+    Sidebar.Parent = MainFrame
+    
+    self.Sidebar = Sidebar
+    
+    local SidebarList = Instance.new("UIListLayout")
+    SidebarList.SortOrder = Enum.SortOrder.LayoutOrder
+    SidebarList.Padding = UDim.new(0, 0)
+    SidebarList.Parent = Sidebar
+    
+    local ContentFrame = Instance.new("Frame")
+    ContentFrame.Name = "ContentFrame"
+    ContentFrame.Size = UDim2.new(1, -100, 1, -2)
+    ContentFrame.Position = UDim2.new(0, 100, 0, 2)
+    ContentFrame.BackgroundColor3 = COLORS.Background
+    ContentFrame.BorderSizePixel = 0
+    ContentFrame.Parent = MainFrame
+    
+    self.ContentFrame = ContentFrame
+    
+    self:MakeDraggable(MainFrame)
+    self:SetupToggleKey()
+end
+
+function UILibrary:MakeDraggable(frame)
+    local dragging = false
+    local dragInput, mousePos, framePos
+    
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            mousePos = input.Position
+            framePos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            frame.Position = UDim2.new(
+                framePos.X.Scale,
+                framePos.X.Offset + delta.X,
+                framePos.Y.Scale,
+                framePos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+function UILibrary:SetupToggleKey()
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == Enum.KeyCode.Insert then
+            self:Toggle()
+        end
+    end)
+end
+
+function UILibrary:Toggle()
+    self.Visible = not self.Visible
+    self.MainFrame.Visible = self.Visible
+end
+
+function UILibrary:SetAccentColor(color)
+    self.AccentColor = color
+    self.TopBorder.BackgroundColor3 = color
+    
+    for _, tab in pairs(self.Tabs) do
+        if tab.Selected then
+            tab.Button.BackgroundColor3 = color
+        end
+    end
+end
+
 function UILibrary:CreateTab(name, iconType)
     local tab = {
         Name = name,
         IconType = iconType,
-        Sections = {},
+        Columns = {},
         Selected = false,
         Library = self
     }
@@ -502,21 +500,12 @@ function UILibrary:CreateTab(name, iconType)
     
     tab.ContentContainer = ContentContainer
     
-    local ContentLayout = Instance.new("UIListLayout")
-    ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    ContentLayout.Padding = UDim.new(0, 10)
-    ContentLayout.Parent = ContentContainer
-    
     local ContentPadding = Instance.new("UIPadding")
     ContentPadding.PaddingTop = UDim.new(0, 10)
-    ContentPadding.PaddingLeft = UDim.new(0, 10)
+    ContentPadding.PaddingLeft = UDim2.new(0, 10)
     ContentPadding.PaddingRight = UDim.new(0, 10)
     ContentPadding.PaddingBottom = UDim.new(0, 10)
     ContentPadding.Parent = ContentContainer
-    
-    ContentLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        ContentContainer.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + 20)
-    end)
     
     Button.MouseButton1Click:Connect(function()
         self:SelectTab(tab)
@@ -586,20 +575,63 @@ end
 function UILibrary:GetTabMethods()
     local methods = {}
     
+    function methods:CreateColumn()
+        local column = {
+            Sections = {},
+            Tab = self,
+            Library = self.Library
+        }
+        
+        local ColumnFrame = Instance.new("Frame")
+        ColumnFrame.Name = "Column" .. (#self.Columns + 1)
+        ColumnFrame.Size = UDim2.new(0.5, -7.5, 1, 0)
+        ColumnFrame.Position = UDim2.new((#self.Columns) * 0.5, (#self.Columns) * 5, 0, 0)
+        ColumnFrame.BackgroundTransparency = 1
+        ColumnFrame.Parent = self.ContentContainer
+        
+        column.Frame = ColumnFrame
+        
+        local ColumnLayout = Instance.new("UIListLayout")
+        ColumnLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        ColumnLayout.Padding = UDim.new(0, 10)
+        ColumnLayout.Parent = ColumnFrame
+        
+        ColumnLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            local maxHeight = 0
+            for _, col in ipairs(self.Columns) do
+                local layout = col.Frame:FindFirstChildOfClass("UIListLayout")
+                if layout then
+                    maxHeight = math.max(maxHeight, layout.AbsoluteContentSize.Y)
+                end
+            end
+            self.ContentContainer.CanvasSize = UDim2.new(0, 0, 0, maxHeight + 20)
+        end)
+        
+        table.insert(self.Columns, column)
+        
+        return setmetatable(column, {__index = self.Library:GetColumnMethods()})
+    end
+    
+    return methods
+end
+
+function UILibrary:GetColumnMethods()
+    local methods = {}
+    
     function methods:CreateSection(name)
         local section = {
             Name = name,
             Elements = {},
-            Tab = self,
+            Column = self,
             Library = self.Library
         }
         
         local SectionFrame = Instance.new("Frame")
         SectionFrame.Name = name
-        SectionFrame.Size = UDim2.new(1, -10, 0, 0)
+        SectionFrame.Size = UDim2.new(1, 0, 0, 0)
         SectionFrame.BackgroundColor3 = COLORS.Panel
         SectionFrame.BorderSizePixel = 0
-        SectionFrame.Parent = self.ContentContainer
+        SectionFrame.Parent = self.Frame
         
         section.Frame = SectionFrame
         
@@ -630,7 +662,7 @@ function UILibrary:GetTabMethods()
         ElementLayout.Parent = ElementContainer
         
         ElementLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            SectionFrame.Size = UDim2.new(1, -10, 0, ElementLayout.AbsoluteContentSize.Y + 60)
+            SectionFrame.Size = UDim2.new(1, 0, 0, ElementLayout.AbsoluteContentSize.Y + 60)
         end)
         
         table.insert(self.Sections, section)
@@ -644,11 +676,14 @@ end
 function UILibrary:GetSectionMethods()
     local methods = {}
     
-    function methods:CreateCheckbox(name, default, callback)
+    function methods:CreateCheckbox(name, default, callback, options)
+        options = options or {}
         local checkbox = {
             Name = name,
             Value = default or false,
-            Callback = callback or function() end
+            Callback = callback or function() end,
+            Keybind = options.Keybind,
+            ColorPicker = options.ColorPicker
         }
         
         local CheckboxFrame = Instance.new("Frame")
@@ -689,6 +724,36 @@ function UILibrary:GetSectionMethods()
         CheckboxLabel.TextXAlignment = Enum.TextXAlignment.Left
         CheckboxLabel.Parent = CheckboxFrame
         
+        if options.Keybind then
+            local KeybindLabel = Instance.new("TextLabel")
+            KeybindLabel.Name = "Keybind"
+            KeybindLabel.Size = UDim2.new(0, 20, 1, 0)
+            KeybindLabel.Position = UDim2.new(1, -20, 0, 0)
+            KeybindLabel.BackgroundTransparency = 1
+            KeybindLabel.Text = "[+]"
+            KeybindLabel.TextColor3 = COLORS.TextDim
+            KeybindLabel.TextSize = 12
+            KeybindLabel.Font = Enum.Font.Gotham
+            KeybindLabel.Parent = CheckboxFrame
+            CheckboxLabel.Size = UDim2.new(1, -45, 1, 0)
+        end
+        
+        if options.ColorPicker then
+            local ColorBox = Instance.new("Frame")
+            ColorBox.Name = "ColorPicker"
+            ColorBox.Size = UDim2.new(0, 14, 0, 14)
+            ColorBox.Position = UDim2.new(1, (options.Keybind and -40 or -20), 0, 3)
+            ColorBox.BackgroundColor3 = options.ColorPicker
+            ColorBox.BorderSizePixel = 0
+            ColorBox.Parent = CheckboxFrame
+            
+            if options.Keybind then
+                CheckboxLabel.Size = UDim2.new(1, -65, 1, 0)
+            else
+                CheckboxLabel.Size = UDim2.new(1, -40, 1, 0)
+            end
+        end
+        
         CheckboxButton.MouseButton1Click:Connect(function()
             checkbox.Value = not checkbox.Value
             CheckboxInner.Visible = checkbox.Value
@@ -709,13 +774,14 @@ function UILibrary:GetSectionMethods()
         return checkbox
     end
     
-    function methods:CreateSlider(name, min, max, default, increment, callback)
+    function methods:CreateSlider(name, min, max, default, increment, suffix, callback)
         local slider = {
             Name = name,
             Min = min or 0,
             Max = max or 100,
             Value = default or min or 0,
             Increment = increment or 1,
+            Suffix = suffix or "",
             Callback = callback or function() end
         }
         
@@ -727,7 +793,7 @@ function UILibrary:GetSectionMethods()
         
         local SliderLabel = Instance.new("TextLabel")
         SliderLabel.Name = "Label"
-        SliderLabel.Size = UDim2.new(1, -50, 0, 15)
+        SliderLabel.Size = UDim2.new(1, 0, 0, 15)
         SliderLabel.BackgroundTransparency = 1
         SliderLabel.Text = name
         SliderLabel.TextColor3 = COLORS.Text
@@ -735,18 +801,6 @@ function UILibrary:GetSectionMethods()
         SliderLabel.Font = Enum.Font.Gotham
         SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
         SliderLabel.Parent = SliderFrame
-        
-        local SliderValue = Instance.new("TextLabel")
-        SliderValue.Name = "Value"
-        SliderValue.Size = UDim2.new(0, 50, 0, 15)
-        SliderValue.Position = UDim2.new(1, -50, 0, 0)
-        SliderValue.BackgroundTransparency = 1
-        SliderValue.Text = tostring(slider.Value)
-        SliderValue.TextColor3 = self.Library.AccentColor
-        SliderValue.TextSize = 12
-        SliderValue.Font = Enum.Font.GothamBold
-        SliderValue.TextXAlignment = Enum.TextXAlignment.Right
-        SliderValue.Parent = SliderFrame
         
         local SliderBar = Instance.new("Frame")
         SliderBar.Name = "Bar"
@@ -762,6 +816,17 @@ function UILibrary:GetSectionMethods()
         SliderFill.BackgroundColor3 = self.Library.AccentColor
         SliderFill.BorderSizePixel = 0
         SliderFill.Parent = SliderBar
+        
+        local SliderValue = Instance.new("TextLabel")
+        SliderValue.Name = "Value"
+        SliderValue.Size = UDim2.new(0, 50, 0, 4)
+        SliderValue.Position = UDim2.new((slider.Value - slider.Min) / (slider.Max - slider.Min), -25, 0, 20)
+        SliderValue.BackgroundTransparency = 1
+        SliderValue.Text = tostring(slider.Value) .. slider.Suffix
+        SliderValue.TextColor3 = self.Library.AccentColor
+        SliderValue.TextSize = 11
+        SliderValue.Font = Enum.Font.GothamBold
+        SliderValue.Parent = SliderFrame
         
         local SliderButton = Instance.new("TextButton")
         SliderButton.Name = "Button"
@@ -782,8 +847,9 @@ function UILibrary:GetSectionMethods()
             value = math.clamp(value, slider.Min, slider.Max)
             
             slider.Value = value
-            SliderValue.Text = tostring(value)
-            SliderFill.Size = UDim2.new((value - slider.Min) / (slider.Max - slider.Min), 0, 1, 0)
+            SliderValue.Text = tostring(value) .. slider.Suffix
+            SliderValue.Position = UDim2.new(pos, -25, 0, 20)
+            SliderFill.Size = UDim2.new(pos, 0, 1, 0)
             
             slider.Callback(value)
         end
@@ -804,8 +870,8 @@ function UILibrary:GetSectionMethods()
             end
         end)
         
-        SliderButton.MouseButton1Click:Connect(function(input)
-            updateSlider(input)
+        SliderButton.MouseButton1Click:Connect(function()
+            updateSlider(UserInputService:GetMouseLocation())
         end)
         
         slider.Frame = SliderFrame
@@ -816,9 +882,11 @@ function UILibrary:GetSectionMethods()
             value = math.clamp(value, self.Min, self.Max)
             value = math.floor(value / self.Increment + 0.5) * self.Increment
             
+            local pos = (value - self.Min) / (self.Max - self.Min)
             self.Value = value
-            SliderValue.Text = tostring(value)
-            SliderFill.Size = UDim2.new((value - self.Min) / (self.Max - self.Min), 0, 1, 0)
+            SliderValue.Text = tostring(value) .. self.Suffix
+            SliderValue.Position = UDim2.new(pos, -25, 0, 20)
+            SliderFill.Size = UDim2.new(pos, 0, 1, 0)
             self.Callback(value)
         end
         
@@ -1035,56 +1103,6 @@ function UILibrary:GetSectionMethods()
         
         table.insert(self.Elements, textbox)
         return textbox
-    end
-    
-    function methods:CreateColorPicker(name, default, callback)
-        local colorpicker = {
-            Name = name,
-            Color = default or Color3.fromRGB(255, 255, 255),
-            Callback = callback or function() end
-        }
-        
-        local PickerFrame = Instance.new("Frame")
-        PickerFrame.Name = name
-        PickerFrame.Size = UDim2.new(1, 0, 0, 20)
-        PickerFrame.BackgroundTransparency = 1
-        PickerFrame.Parent = self.ElementContainer
-        
-        local PickerLabel = Instance.new("TextLabel")
-        PickerLabel.Name = "Label"
-        PickerLabel.Size = UDim2.new(1, -30, 1, 0)
-        PickerLabel.BackgroundTransparency = 1
-        PickerLabel.Text = name
-        PickerLabel.TextColor3 = COLORS.Text
-        PickerLabel.TextSize = 12
-        PickerLabel.Font = Enum.Font.Gotham
-        PickerLabel.TextXAlignment = Enum.TextXAlignment.Left
-        PickerLabel.Parent = PickerFrame
-        
-        local ColorDisplay = Instance.new("TextButton")
-        ColorDisplay.Name = "Display"
-        ColorDisplay.Size = UDim2.new(0, 20, 0, 20)
-        ColorDisplay.Position = UDim2.new(1, -20, 0, 0)
-        ColorDisplay.BackgroundColor3 = colorpicker.Color
-        ColorDisplay.BorderColor3 = COLORS.Border
-        ColorDisplay.BorderSizePixel = 1
-        ColorDisplay.Text = ""
-        ColorDisplay.Parent = PickerFrame
-        
-        ColorDisplay.MouseButton1Click:Connect(function()
-        end)
-        
-        colorpicker.Frame = PickerFrame
-        colorpicker.Display = ColorDisplay
-        
-        function colorpicker:SetColor(color)
-            self.Color = color
-            ColorDisplay.BackgroundColor3 = color
-            self.Callback(color)
-        end
-        
-        table.insert(self.Elements, colorpicker)
-        return colorpicker
     end
     
     function methods:CreateLabel(text)
