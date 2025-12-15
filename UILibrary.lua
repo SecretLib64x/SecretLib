@@ -590,7 +590,8 @@ function UILibrary:GetTabMethods()
         local section = {
             Name = name,
             Elements = {},
-            Tab = self
+            Tab = self,
+            Library = self.Library
         }
         
         local SectionFrame = Instance.new("Frame")
