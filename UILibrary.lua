@@ -634,7 +634,7 @@ function UILibrary:GetTabMethods()
         
         table.insert(self.Sections, section)
         
-        return setmetatable(section, {__index = self.Tab.Library:GetSectionMethods()})
+        return setmetatable(section, {__index = self.Library:GetSectionMethods()})
     end
     
     return methods
