@@ -502,7 +502,7 @@ function UILibrary:CreateTab(name, iconType)
     
     local ContentPadding = Instance.new("UIPadding")
     ContentPadding.PaddingTop = UDim.new(0, 10)
-    ContentPadding.PaddingLeft = UDim2.new(0, 10)
+    ContentPadding.PaddingLeft = UDim.new(0, 10)
     ContentPadding.PaddingRight = UDim.new(0, 10)
     ContentPadding.PaddingBottom = UDim.new(0, 10)
     ContentPadding.Parent = ContentContainer
