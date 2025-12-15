@@ -155,10 +155,309 @@ function UILibrary:SetAccentColor(color)
     end
 end
 
-function UILibrary:CreateTab(name, icon)
+local IconDrawings = {
+    Rage = function(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(0, 50, 0, 50)
+        container.Position = UDim2.new(0.5, -25, 0.5, -25)
+        container.BackgroundTransparency = 1
+        container.Parent = parent
+        
+        local outer = Instance.new("Frame")
+        outer.Size = UDim2.new(0, 40, 0, 40)
+        outer.Position = UDim2.new(0.5, -20, 0.5, -20)
+        outer.BackgroundTransparency = 1
+        outer.BorderSizePixel = 0
+        outer.Parent = container
+        
+        local circle = Instance.new("ImageLabel")
+        circle.Size = UDim2.new(1, 0, 1, 0)
+        circle.BackgroundTransparency = 1
+        circle.Image = "rbxassetid://3926305904"
+        circle.ImageRectOffset = Vector2.new(644, 644)
+        circle.ImageRectSize = Vector2.new(36, 36)
+        circle.ImageColor3 = COLORS.TextDim
+        circle.Parent = outer
+        
+        local crosshair1 = Instance.new("Frame")
+        crosshair1.Size = UDim2.new(0, 2, 0, 8)
+        crosshair1.Position = UDim2.new(0.5, -1, 0, -2)
+        crosshair1.BackgroundColor3 = COLORS.TextDim
+        crosshair1.BorderSizePixel = 0
+        crosshair1.Parent = outer
+        
+        local crosshair2 = Instance.new("Frame")
+        crosshair2.Size = UDim2.new(0, 2, 0, 8)
+        crosshair2.Position = UDim2.new(0.5, -1, 1, -6)
+        crosshair2.BackgroundColor3 = COLORS.TextDim
+        crosshair2.BorderSizePixel = 0
+        crosshair2.Parent = outer
+        
+        local crosshair3 = Instance.new("Frame")
+        crosshair3.Size = UDim2.new(0, 8, 0, 2)
+        crosshair3.Position = UDim2.new(0, -2, 0.5, -1)
+        crosshair3.BackgroundColor3 = COLORS.TextDim
+        crosshair3.BorderSizePixel = 0
+        crosshair3.Parent = outer
+        
+        local crosshair4 = Instance.new("Frame")
+        crosshair4.Size = UDim2.new(0, 8, 0, 2)
+        crosshair4.Position = UDim2.new(1, -6, 0.5, -1)
+        crosshair4.BackgroundColor3 = COLORS.TextDim
+        crosshair4.BorderSizePixel = 0
+        crosshair4.Parent = outer
+        
+        local dot = Instance.new("Frame")
+        dot.Size = UDim2.new(0, 4, 0, 4)
+        dot.Position = UDim2.new(0.5, -2, 0.5, -2)
+        dot.BackgroundColor3 = COLORS.TextDim
+        dot.BorderSizePixel = 0
+        dot.Parent = outer
+        
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(1, 0)
+        corner.Parent = dot
+        
+        return container, {circle, crosshair1, crosshair2, crosshair3, crosshair4, dot}
+    end,
+    
+    Visuals = function(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(0, 50, 0, 50)
+        container.Position = UDim2.new(0.5, -25, 0.5, -25)
+        container.BackgroundTransparency = 1
+        container.Parent = parent
+        
+        local parts = {}
+        
+        local leftHalf = Instance.new("Frame")
+        leftHalf.Size = UDim2.new(0, 18, 0, 32)
+        leftHalf.Position = UDim2.new(0.5, -20, 0.5, -16)
+        leftHalf.BackgroundColor3 = COLORS.TextDim
+        leftHalf.BorderSizePixel = 0
+        leftHalf.Parent = container
+        table.insert(parts, leftHalf)
+        
+        local leftCorner = Instance.new("UICorner")
+        leftCorner.CornerRadius = UDim.new(0, 9)
+        leftCorner.Parent = leftHalf
+        
+        local rightHalf = Instance.new("Frame")
+        rightHalf.Size = UDim2.new(0, 18, 0, 32)
+        rightHalf.Position = UDim2.new(0.5, 2, 0.5, -16)
+        rightHalf.BackgroundColor3 = COLORS.TextDim
+        rightHalf.BorderSizePixel = 0
+        rightHalf.Parent = container
+        table.insert(parts, rightHalf)
+        
+        local rightCorner = Instance.new("UICorner")
+        rightCorner.CornerRadius = UDim.new(0, 9)
+        rightCorner.Parent = rightHalf
+        
+        local rays = {}
+        for i = 1, 8 do
+            local angle = (i - 1) * 45
+            local ray = Instance.new("Frame")
+            ray.Size = UDim2.new(0, 2, 0, 6)
+            ray.AnchorPoint = Vector2.new(0.5, 1)
+            ray.Position = UDim2.new(0.5, 0, 0.5, 0)
+            ray.BackgroundColor3 = COLORS.TextDim
+            ray.BorderSizePixel = 0
+            ray.Rotation = angle
+            ray.Parent = container
+            table.insert(parts, ray)
+            table.insert(rays, ray)
+        end
+        
+        for _, ray in ipairs(rays) do
+            ray.Position = UDim2.new(0.5, math.sin(math.rad(ray.Rotation)) * 20, 0.5, -math.cos(math.rad(ray.Rotation)) * 20)
+        end
+        
+        return container, parts
+    end,
+    
+    Misc = function(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(0, 50, 0, 50)
+        container.Position = UDim2.new(0.5, -25, 0.5, -25)
+        container.BackgroundTransparency = 1
+        container.Parent = parent
+        
+        local parts = {}
+        
+        local gear1 = Instance.new("ImageLabel")
+        gear1.Size = UDim2.new(0, 24, 0, 24)
+        gear1.Position = UDim2.new(0.5, -18, 0.5, -18)
+        gear1.BackgroundTransparency = 1
+        gear1.Image = "rbxassetid://3926307971"
+        gear1.ImageRectOffset = Vector2.new(324, 364)
+        gear1.ImageRectSize = Vector2.new(36, 36)
+        gear1.ImageColor3 = COLORS.TextDim
+        gear1.Parent = container
+        table.insert(parts, gear1)
+        
+        local gear2 = Instance.new("ImageLabel")
+        gear2.Size = UDim2.new(0, 20, 0, 20)
+        gear2.Position = UDim2.new(0.5, 2, 0.5, 2)
+        gear2.BackgroundTransparency = 1
+        gear2.Image = "rbxassetid://3926307971"
+        gear2.ImageRectOffset = Vector2.new(324, 364)
+        gear2.ImageRectSize = Vector2.new(36, 36)
+        gear2.ImageColor3 = COLORS.TextDim
+        gear2.Parent = container
+        table.insert(parts, gear2)
+        
+        return container, parts
+    end,
+    
+    Skins = function(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(0, 50, 0, 50)
+        container.Position = UDim2.new(0.5, -25, 0.5, -25)
+        container.BackgroundTransparency = 1
+        container.Parent = parent
+        
+        local parts = {}
+        
+        local crescent = Instance.new("Frame")
+        crescent.Size = UDim2.new(0, 32, 0, 32)
+        crescent.Position = UDim2.new(0.5, -16, 0.5, -16)
+        crescent.BackgroundColor3 = COLORS.TextDim
+        crescent.BorderSizePixel = 0
+        crescent.Parent = container
+        table.insert(parts, crescent)
+        
+        local crescentCorner = Instance.new("UICorner")
+        crescentCorner.CornerRadius = UDim.new(1, 0)
+        crescentCorner.Parent = crescent
+        
+        local cutout = Instance.new("Frame")
+        cutout.Size = UDim2.new(0, 28, 0, 28)
+        cutout.Position = UDim2.new(0, 8, 0, 2)
+        cutout.BackgroundColor3 = COLORS.Sidebar
+        cutout.BorderSizePixel = 0
+        cutout.Parent = crescent
+        
+        local cutoutCorner = Instance.new("UICorner")
+        cutoutCorner.CornerRadius = UDim.new(1, 0)
+        cutoutCorner.Parent = cutout
+        
+        local dot1 = Instance.new("Frame")
+        dot1.Size = UDim2.new(0, 3, 0, 3)
+        dot1.Position = UDim2.new(0, 6, 0, 8)
+        dot1.BackgroundColor3 = COLORS.Sidebar
+        dot1.BorderSizePixel = 0
+        dot1.Parent = crescent
+        
+        local dot1Corner = Instance.new("UICorner")
+        dot1Corner.CornerRadius = UDim.new(1, 0)
+        dot1Corner.Parent = dot1
+        
+        local dot2 = Instance.new("Frame")
+        dot2.Size = UDim2.new(0, 2, 0, 2)
+        dot2.Position = UDim2.new(0, 10, 0, 4)
+        dot2.BackgroundColor3 = COLORS.Sidebar
+        dot2.BorderSizePixel = 0
+        dot2.Parent = crescent
+        
+        local dot2Corner = Instance.new("UICorner")
+        dot2Corner.CornerRadius = UDim.new(1, 0)
+        dot2Corner.Parent = dot2
+        
+        return container, parts
+    end,
+    
+    Players = function(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(0, 50, 0, 50)
+        container.Position = UDim2.new(0.5, -25, 0.5, -25)
+        container.BackgroundTransparency = 1
+        container.Parent = parent
+        
+        local parts = {}
+        
+        local head = Instance.new("Frame")
+        head.Size = UDim2.new(0, 16, 0, 16)
+        head.Position = UDim2.new(0.5, -8, 0.5, -18)
+        head.BackgroundColor3 = COLORS.TextDim
+        head.BorderSizePixel = 0
+        head.Parent = container
+        table.insert(parts, head)
+        
+        local headCorner = Instance.new("UICorner")
+        headCorner.CornerRadius = UDim.new(1, 0)
+        headCorner.Parent = head
+        
+        local body = Instance.new("Frame")
+        body.Size = UDim2.new(0, 24, 0, 18)
+        body.Position = UDim2.new(0.5, -12, 0.5, 2)
+        body.BackgroundColor3 = COLORS.TextDim
+        body.BorderSizePixel = 0
+        body.Parent = container
+        table.insert(parts, body)
+        
+        local bodyCorner = Instance.new("UICorner")
+        bodyCorner.CornerRadius = UDim.new(0, 12)
+        bodyCorner.Parent = body
+        
+        return container, parts
+    end,
+    
+    Config = function(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(0, 50, 0, 50)
+        container.Position = UDim2.new(0.5, -25, 0.5, -25)
+        container.BackgroundTransparency = 1
+        container.Parent = parent
+        
+        local parts = {}
+        
+        local disk = Instance.new("Frame")
+        disk.Size = UDim2.new(0, 32, 0, 32)
+        disk.Position = UDim2.new(0.5, -16, 0.5, -16)
+        disk.BackgroundColor3 = COLORS.TextDim
+        disk.BorderSizePixel = 0
+        disk.Parent = container
+        table.insert(parts, disk)
+        
+        local diskCorner = Instance.new("UICorner")
+        diskCorner.CornerRadius = UDim.new(0, 3)
+        diskCorner.Parent = disk
+        
+        local notch = Instance.new("Frame")
+        notch.Size = UDim2.new(0, 8, 0, 4)
+        notch.Position = UDim2.new(0.5, -4, 0, -2)
+        notch.BackgroundColor3 = COLORS.TextDim
+        notch.BorderSizePixel = 0
+        notch.Parent = container
+        table.insert(parts, notch)
+        
+        local window = Instance.new("Frame")
+        window.Size = UDim2.new(0, 16, 0, 12)
+        window.Position = UDim2.new(0.5, -8, 0.5, -10)
+        window.BackgroundColor3 = COLORS.Sidebar
+        window.BorderSizePixel = 0
+        window.Parent = disk
+        
+        local windowCorner = Instance.new("UICorner")
+        windowCorner.CornerRadius = UDim.new(0, 2)
+        windowCorner.Parent = window
+        
+        local line = Instance.new("Frame")
+        line.Size = UDim2.new(0, 16, 0, 2)
+        line.Position = UDim2.new(0.5, -8, 1, -8)
+        line.BackgroundColor3 = COLORS.Sidebar
+        line.BorderSizePixel = 0
+        line.Parent = disk
+        
+        return container, parts
+    end
+}
+
+function UILibrary:CreateTab(name, iconType)
     local tab = {
         Name = name,
-        Icon = icon,
+        IconType = iconType,
         Sections = {},
         Selected = false,
         Library = self
@@ -175,18 +474,20 @@ function UILibrary:CreateTab(name, icon)
     
     tab.Button = Button
     
-    local IconLabel = Instance.new("TextLabel")
-    IconLabel.Name = "Icon"
-    IconLabel.Size = UDim2.new(0, 50, 0, 50)
-    IconLabel.Position = UDim2.new(0.5, -25, 0.5, -25)
-    IconLabel.BackgroundTransparency = 1
-    IconLabel.Text = icon or "?"
-    IconLabel.TextColor3 = COLORS.TextDim
-    IconLabel.TextSize = 32
-    IconLabel.Font = Enum.Font.GothamBold
-    IconLabel.Parent = Button
+    local iconContainer, iconParts
+    if IconDrawings[iconType] then
+        iconContainer, iconParts = IconDrawings[iconType](Button)
+    else
+        iconContainer = Instance.new("Frame")
+        iconContainer.Size = UDim2.new(0, 50, 0, 50)
+        iconContainer.Position = UDim2.new(0.5, -25, 0.5, -25)
+        iconContainer.BackgroundTransparency = 1
+        iconContainer.Parent = Button
+        iconParts = {}
+    end
     
-    tab.IconLabel = IconLabel
+    tab.IconContainer = iconContainer
+    tab.IconParts = iconParts
     
     local ContentContainer = Instance.new("ScrollingFrame")
     ContentContainer.Name = name .. "Content"
@@ -223,13 +524,25 @@ function UILibrary:CreateTab(name, icon)
     
     Button.MouseEnter:Connect(function()
         if not tab.Selected then
-            IconLabel.TextColor3 = COLORS.Text
+            for _, part in ipairs(tab.IconParts) do
+                if part:IsA("ImageLabel") then
+                    part.ImageColor3 = COLORS.Text
+                else
+                    part.BackgroundColor3 = COLORS.Text
+                end
+            end
         end
     end)
     
     Button.MouseLeave:Connect(function()
         if not tab.Selected then
-            IconLabel.TextColor3 = COLORS.TextDim
+            for _, part in ipairs(tab.IconParts) do
+                if part:IsA("ImageLabel") then
+                    part.ImageColor3 = COLORS.TextDim
+                else
+                    part.BackgroundColor3 = COLORS.TextDim
+                end
+            end
         end
     end)
     
@@ -246,13 +559,25 @@ function UILibrary:SelectTab(tab)
     for _, t in pairs(self.Tabs) do
         t.Selected = false
         t.Button.BackgroundColor3 = COLORS.Sidebar
-        t.IconLabel.TextColor3 = COLORS.TextDim
+        for _, part in ipairs(t.IconParts) do
+            if part:IsA("ImageLabel") then
+                part.ImageColor3 = COLORS.TextDim
+            else
+                part.BackgroundColor3 = COLORS.TextDim
+            end
+        end
         t.ContentContainer.Visible = false
     end
     
     tab.Selected = true
     tab.Button.BackgroundColor3 = self.AccentColor
-    tab.IconLabel.TextColor3 = COLORS.Text
+    for _, part in ipairs(tab.IconParts) do
+        if part:IsA("ImageLabel") then
+            part.ImageColor3 = COLORS.Text
+        else
+            part.BackgroundColor3 = COLORS.Text
+        end
+    end
     tab.ContentContainer.Visible = true
     
     self.CurrentTab = tab
