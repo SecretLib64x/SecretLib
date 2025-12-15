@@ -672,7 +672,7 @@ function UILibrary:GetSectionMethods()
         CheckboxInner.Name = "Inner"
         CheckboxInner.Size = UDim2.new(1, -4, 1, -4)
         CheckboxInner.Position = UDim2.new(0, 2, 0, 2)
-        CheckboxInner.BackgroundColor3 = self.Tab.Library.AccentColor
+        CheckboxInner.BackgroundColor3 = self.Library.AccentColor
         CheckboxInner.BorderSizePixel = 0
         CheckboxInner.Visible = checkbox.Value
         CheckboxInner.Parent = CheckboxButton
@@ -742,7 +742,7 @@ function UILibrary:GetSectionMethods()
         SliderValue.Position = UDim2.new(1, -50, 0, 0)
         SliderValue.BackgroundTransparency = 1
         SliderValue.Text = tostring(slider.Value)
-        SliderValue.TextColor3 = self.Tab.Library.AccentColor
+        SliderValue.TextColor3 = self.Library.AccentColor
         SliderValue.TextSize = 12
         SliderValue.Font = Enum.Font.GothamBold
         SliderValue.TextXAlignment = Enum.TextXAlignment.Right
@@ -759,7 +759,7 @@ function UILibrary:GetSectionMethods()
         local SliderFill = Instance.new("Frame")
         SliderFill.Name = "Fill"
         SliderFill.Size = UDim2.new((slider.Value - slider.Min) / (slider.Max - slider.Min), 0, 1, 0)
-        SliderFill.BackgroundColor3 = self.Tab.Library.AccentColor
+        SliderFill.BackgroundColor3 = self.Library.AccentColor
         SliderFill.BorderSizePixel = 0
         SliderFill.Parent = SliderBar
         
